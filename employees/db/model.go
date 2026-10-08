@@ -1,4 +1,4 @@
-package httpserver
+package db
 
 type Employee struct {
 	ID       int    `json:"id"`

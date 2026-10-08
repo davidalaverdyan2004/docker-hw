@@ -1,13 +1,14 @@
 package httpserver
 
 import (
+	"employees/db"
 	"encoding/json"
 	"net/http"
 )
 
 func CreateEmployee(w http.ResponseWriter, r *http.Request) {
 
-	var emp Employee
+	var emp db.Employee
 
 	err := json.NewDecoder(r.Body).Decode(&emp)
 	if err != nil {

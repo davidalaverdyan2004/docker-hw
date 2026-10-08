@@ -1,7 +1,10 @@
 package httpserver
 
-import "sync"
+import (
+	"employees/db"
+	"sync"
+)
 
-var employees = []Employee{}
+var employees = []db.Employee{}
 var nextID = 1
 var mtx sync.Mutex
