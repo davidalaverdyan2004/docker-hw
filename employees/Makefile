@@ -1,4 +1,10 @@
+include .env
+export
+
 .PHONY: build run-http-app
+
+run:
+	go run main.go
 
 build:
 	docker build -t employees-app .

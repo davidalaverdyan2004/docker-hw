@@ -2,16 +2,20 @@ package httpserver
 
 import (
 	"net/http"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func StartHttpServer() error {
+func StartHttpServer(pool *pgxpool.Pool) error {
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello from Docker"))
 	})
 
-	http.HandleFunc("GET /employees", GetEmployees)
+	h := &Handler{pool: pool}
 
-	http.HandleFunc("POST /employees", CreateEmployee)
+	http.HandleFunc("GET /employees", h.GetEmployees)
+
+	http.HandleFunc("POST /employees", h.CreateEmployee)
 
 	http.HandleFunc("DELETE /employees/{id}", DeleteEmployee)
 

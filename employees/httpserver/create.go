@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func CreateEmployee(w http.ResponseWriter, r *http.Request) {
+func (h *Handler)CreateEmployee(w http.ResponseWriter, r *http.Request) {
 
 	var emp db.Employee
 
@@ -21,13 +21,12 @@ func CreateEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mtx.Lock()
-	defer mtx.Unlock()
 
-	emp.ID = nextID
-	nextID++
-
-	employees = append(employees, emp)
+	emp, err = db.AddEmployee(r.Context(), h.pool, emp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
