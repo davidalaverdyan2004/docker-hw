@@ -1,11 +1,13 @@
 package httpserver
 
 import (
+	"employees/db"
+	"errors"
 	"net/http"
 	"strconv"
 )
 
-func DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
 
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
@@ -14,16 +16,16 @@ func DeleteEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mtx.Lock()
-	defer mtx.Unlock()
-
-	for i, e := range employees {
-		if e.ID == id {
-			employees = append(employees[:i], employees[i+1:]...)
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
+	err = db.DeleteEmployee(r.Context(), h.pool, id)
+	if errors.Is(err, db.ErrNotFound) {
+		http.Error(w, "работник не найден", http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	http.Error(w, "работник не найден", http.StatusNotFound)
+	w.WriteHeader(http.StatusNoContent)
+
 }

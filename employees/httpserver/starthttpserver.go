@@ -17,7 +17,7 @@ func StartHttpServer(pool *pgxpool.Pool) error {
 
 	http.HandleFunc("POST /employees", h.CreateEmployee)
 
-	http.HandleFunc("DELETE /employees/{id}", DeleteEmployee)
+	http.HandleFunc("DELETE /employees/{id}", h.DeleteEmployee)
 
 	err := http.ListenAndServe(":5050", nil)
 	if err == http.ErrServerClosed {
