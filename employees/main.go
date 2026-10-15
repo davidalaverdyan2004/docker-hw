@@ -16,7 +16,7 @@ func main() {
 	pool, err := db.Connect(ctx, connString)
 	if err != nil {
 		fmt.Println("err connect", err)
-		return
+		os.Exit(1)
 	}
 
 	defer pool.Close()
@@ -24,7 +24,7 @@ func main() {
 	err = db.CreateTable(ctx, pool)
 	if err != nil {
 		fmt.Println("Create table:", err)
-		return
+		os.Exit(1)
 	}
 
 	fmt.Println("сервер запущен на :5050")

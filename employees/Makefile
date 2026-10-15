@@ -1,7 +1,7 @@
 include .env
 export
 
-.PHONY: build run-http-app
+.PHONY: run build run-http-app postgres-up postgres-down
 
 run:
 	go run main.go
@@ -10,15 +10,10 @@ build:
 	docker build -t employees-app .
 
 run-http-app:
-	docker run --rm -p 5050:5050 employees-app
+	docker compose up -d --build app
 
 postgres-up:
-	@docker run -d --rm \
-		--name employees-postgres \
-		-e POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
-		-p 5432:5432 \
-		-v employees-pgdata:/var/lib/postgresql \
-		postgres:18
+	docker compose up -d postgres
 
 postgres-down:
-	docker stop employees-postgres
+	docker compose down
